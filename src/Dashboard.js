@@ -39,7 +39,6 @@ const UserDropdown = () => {
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
 
-  // 监听点击事件，点击头像外的区域关闭菜单
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -54,19 +53,15 @@ const UserDropdown = () => {
 
   return (
     <div className="relative" ref={dropdownRef}>
-      {/* 头像按钮 */}
       <button
-        onClick={() => setIsOpen(!isOpen)} // 点击切换菜单
+        onClick={() => setIsOpen(!isOpen)}
         className="w-10 h-10 flex items-center justify-center bg-gray-200 hover:bg-gray-300 rounded-full transition"
       >
         <User className="w-6 h-6 text-gray-700" />
       </button>
 
-      {/* Logout 菜单 */}
       {isOpen && (
-        <div
-          className="absolute right-0 mt-2 w-32 bg-white shadow-lg rounded-lg overflow-hidden z-50"
-        >
+        <div className="absolute right-0 mt-2 w-32 bg-white shadow-lg rounded-lg overflow-hidden z-50">
           <button
             onClick={() => navigate("/login")}
             className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 transition"
@@ -79,27 +74,28 @@ const UserDropdown = () => {
   );
 };
 
-// 头部组件
-const Header = ({ onCreate }) => {
+// 头部组件（修改：点击 Create 按钮跳转到 Create 页面）
+const Header = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="flex items-center justify-between border-b pb-4 mb-6 bg-white shadow p-6 rounded-lg">
-      <Home className="w-8 h-8 cursor-pointer text-gray-700" />
+      <Home className="w-8 h-8 cursor-pointer text-gray-700" onClick={() => navigate("/")} />
       <h1 className="text-2xl font-extrabold text-gray-800">PROGRAM COMMITTEE</h1>
       <div className="flex items-center gap-4">
         <button
-          onClick={onCreate}
+          onClick={() => navigate("/create")}
           className="bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-lg font-semibold transition"
         >
           Create
         </button>
-        {/* 头像 + Logout 组件 */}
         <UserDropdown />
       </div>
     </div>
   );
 };
 
-// 主题候选者列表 (更新 Topic 1,2,3,4,5,6)
+// 主题候选者列表
 const TopicList = ({ topics, avatars }) => (
   <div className="bg-gray-50 p-6 rounded-xl shadow-lg flex flex-col gap-6">
     {topics.map((topic, index) => (
@@ -142,7 +138,8 @@ const ResourceLinks = () => (
   </div>
 );
 
-const ConferencePage = () => {
+// 主页面组件
+const Dashboard = () => {
   const [committees, setCommittees] = useState({
     processing: ["Committee 1", "Committee 2", "Committee 3"],
     finished: ["Committee 4", "Committee 5", "Committee 6"],
@@ -156,18 +153,11 @@ const ConferencePage = () => {
     "https://randomuser.me/api/portraits/men/2.jpg",
   ];
 
-  const handleCreate = () => {
-    setCommittees((prev) => ({
-      ...prev,
-      processing: [...prev.processing, `Committee ${prev.processing.length + 1}`],
-    }));
-  };
-
   return (
     <div className="flex h-screen w-screen bg-gray-100 p-6">
       <CommitteeList committees={committees} />
       <div className="flex-1 flex flex-col px-6">
-        <Header onCreate={handleCreate} />
+        <Header />
         <TopicList topics={topics} avatars={avatars} />
         <ResourceLinks />
       </div>
@@ -175,4 +165,4 @@ const ConferencePage = () => {
   );
 };
 
-export default ConferencePage;
+export default Dashboard;
